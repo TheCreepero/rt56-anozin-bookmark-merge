@@ -15,6 +15,9 @@ BeforeAll {
         param([Parameter(Mandatory = $true)][string]$Text)
         return [regex]::Replace($Text, "(?s)\r?\n\t\tUSA = \{\r?\n.*?\r?\n\t\t\}", "", 1)
     }
+
+    $script:AnozinDescriptorPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\frozen_3683330006_2026-10-17\descriptor.mod"
+    $script:AnozinLauncherModPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\frozen_3683330006_2026-10-17.mod"
 }
 
 Describe "descriptor.mod Invariants" {
@@ -87,5 +90,14 @@ Describe "Bookmark Merge Invariants" {
         $mergedContent = [System.IO.File]::ReadAllText($script:BookmarkPath, [System.Text.Encoding]::UTF8)
         $standaloneContent = [System.IO.File]::ReadAllText($script:StandaloneBookmarkPath, [System.Text.Encoding]::UTF8)
         (Remove-UsaMajorBlock -Text $mergedContent) | Should -BeExactly (Remove-UsaMajorBlock -Text $standaloneContent)
+    }
+
+    It "ensures Anozin's USA Reimagined depends on RT56 - VNR - UTT Standalone v14 when installed" {
+        if (-not (Test-Path -LiteralPath $script:AnozinDescriptorPath)) {
+            Set-ItResult -Skipped -Because "frozen_3683330006_2026-10-17 is not installed in the local mod folder"
+            return
+        }
+        ([System.IO.File]::ReadAllText($script:AnozinDescriptorPath, [System.Text.Encoding]::UTF8)) | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v14".*?\}'
+        ([System.IO.File]::ReadAllText($script:AnozinLauncherModPath, [System.Text.Encoding]::UTF8)) | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v14".*?\}'
     }
 }

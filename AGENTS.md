@@ -11,7 +11,7 @@ Shared rules for every mod in this tree (file encodings, build commands, engine 
 
 ## Mod invariants
 - Ship only the merged bookmark file, under the game's own name: it takes the place of the whole file, so it must hold every country's entry [LOAD-010].
-- Load after both required mods: `dependencies` in `descriptor.mod` names `RT56 - VNR - UTT Standalone v14` and `Anozin's USA Reimagined`, and the launcher's `.mod` file needs the same lines [LOAD-014].
+- Load after both required mods: `dependencies` in `descriptor.mod` names `RT56 - VNR - UTT Standalone v14` and `Anozin's USA Reimagined`, and the launcher's `.mod` file needs the same lines [LOAD-014]. `Anozin's USA Reimagined` (`3683330006`) must also list `RT56 - VNR - UTT Standalone v14` in its frozen `descriptor.mod` and `.mod` (`localDependencies` in `Config/frozen_workshop_mods.json`) so this patch does not tie their priorities [LOAD-014] [LOAD-015].
 - A new frozen version of Anozin's USA Reimagined, or a new standalone version, means a new merge: compare the bookmark of each again and rewrite the file, and update the dependency names when a name changes.
 - Write `.txt` files as UTF-8 without BOM [ENC-001]. Keep the `key="value"` form in `descriptor.mod`, no spaces around `=` [ENC-004].
 
