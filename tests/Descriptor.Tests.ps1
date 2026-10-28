@@ -3,7 +3,7 @@ BeforeAll {
     $script:DescriptorPath = Join-Path $script:RepoRoot "descriptor.mod"
     $script:ThumbnailPath = Join-Path $script:RepoRoot "thumbnail.png"
     $script:BookmarkPath = Join-Path $script:RepoRoot "common\bookmarks\the_gathering_storm.txt"
-    $script:StandaloneBookmarkPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\rt56-vnr-utt-standalone-v15\common\bookmarks\the_gathering_storm.txt"
+    $script:StandaloneBookmarkPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\rt56-vnr-utt-standalone-v16\common\bookmarks\the_gathering_storm.txt"
 
     function Test-HasUtf8Bom {
         param([Parameter(Mandatory = $true)][string]$Path)
@@ -16,8 +16,8 @@ BeforeAll {
         return [regex]::Replace($Text, "(?s)\r?\n\t\tUSA = \{\r?\n.*?\r?\n\t\t\}", "", 1)
     }
 
-    $script:AnozinDescriptorPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\frozen_3683330006_2026-10-28\descriptor.mod"
-    $script:AnozinLauncherModPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\frozen_3683330006_2026-10-28.mod"
+    $script:AnozinDescriptorPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\frozen_3683330006_2026-10-28-2\descriptor.mod"
+    $script:AnozinLauncherModPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Paradox Interactive\Hearts of Iron IV\mod\frozen_3683330006_2026-10-28-2.mod"
 }
 
 Describe "descriptor.mod Invariants" {
@@ -47,7 +47,7 @@ Describe "descriptor.mod Invariants" {
 
     It "descriptor.mod declares dependencies on both required mods and has no remote_file_id" {
         $content = [System.IO.File]::ReadAllText($script:DescriptorPath, [System.Text.Encoding]::UTF8)
-        $content | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v15".*?\}'
+        $content | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v16".*?\}'
         $content | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v14".*?\}'
         $content | Should -Match '(?s)dependencies=\{.*?"Anozin''s USA Reimagined".*?\}'
         $content | Should -Not -Match 'remote_file_id'
@@ -85,7 +85,7 @@ Describe "Bookmark Merge Invariants" {
 
     It "matches the standalone bookmark outside the USA entry when the standalone is installed" {
         if (-not (Test-Path -LiteralPath $script:StandaloneBookmarkPath)) {
-            Set-ItResult -Skipped -Because "RT56 - VNR - UTT Standalone v15 is not installed in the local mod folder"
+            Set-ItResult -Skipped -Because "RT56 - VNR - UTT Standalone v16 is not installed in the local mod folder"
             return
         }
         $mergedContent = [System.IO.File]::ReadAllText($script:BookmarkPath, [System.Text.Encoding]::UTF8)
@@ -93,14 +93,14 @@ Describe "Bookmark Merge Invariants" {
         (Remove-UsaMajorBlock -Text $mergedContent) | Should -BeExactly (Remove-UsaMajorBlock -Text $standaloneContent)
     }
 
-    It "ensures Anozin's USA Reimagined depends on RT56 - VNR - UTT Standalone v15 and v14 when installed" {
+    It "ensures Anozin's USA Reimagined depends on RT56 - VNR - UTT Standalone v16 and v14 when installed" {
         if (-not (Test-Path -LiteralPath $script:AnozinDescriptorPath)) {
-            Set-ItResult -Skipped -Because "frozen_3683330006_2026-10-28 is not installed in the local mod folder"
+            Set-ItResult -Skipped -Because "frozen_3683330006_2026-10-28-2 is not installed in the local mod folder"
             return
         }
         foreach ($anozinFile in @($script:AnozinDescriptorPath, $script:AnozinLauncherModPath)) {
             $anozinText = [System.IO.File]::ReadAllText($anozinFile, [System.Text.Encoding]::UTF8)
-            $anozinText | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v15".*?\}'
+            $anozinText | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v16".*?\}'
             $anozinText | Should -Match '(?s)dependencies=\{.*?"RT56 - VNR - UTT Standalone v14".*?\}'
         }
     }
