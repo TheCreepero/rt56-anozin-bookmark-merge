@@ -5,6 +5,7 @@ tags={
 }
 dependencies={
 	"RT56 - VNR - UTT Standalone v14"
+	"RT56 - VNR - UTT Standalone v15"
 	"Anozin's USA Reimagined"
 }
 name="RT56 - Anozin's USA Bookmark Merge"
